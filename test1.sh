@@ -1,6 +1,3 @@
-# test1=`dialog --stdout --inputbox "請輸入IP或網域名稱" 8 40`;
-# dialog --title "你輸入IP或網域" --msgbox "$test1" 8 40;
-# ping $test1 -c 1 > test1.txt;
 # 清空txt
 > test1.txt
 username=`dialog --stdout --inputbox "您好!我想要統計大眾對於諾羅病毒的認知。\n現在要建立您的個人資料，請輸入你的名字(帳號):" 10 80`;
@@ -46,3 +43,26 @@ fi
 echo "問題:請問感染諾羅病毒後，應採取甚麼行為?" >> test1.txt
 echo "回答: $ans3" >> test1.txt
 dialog --title "對答紀錄" --textbox ~/test1.txt 30 100
+
+db_user="sharon"
+db_passw="dv107"
+db_name="test1_20250225"
+db_host="localhost"
+
+mysql -u$db_user -p$db_passw -h $db_host -D $db_name -e "
+create table if not exists test1_ans (
+question text not null,
+ans text not null);
+"
+
+mysql -u$db_user -p"$db_passw" -h $db_host -D $db_name -e "
+insert into test1_ans (question, ans)
+values ('請問諾羅病毒用酒精消毒有用嗎?', '$ans'),
+('請問下列何者不是感染諾羅病毒的症狀?', '$ans2'),
+('請問感染諾羅病毒後，應採取甚麼行為?', '$ans3');"
+
+mysql -u$db_user -p"$db_passw" -h $db_host -D $db_name -e "
+select * from test1_ans;"
+
+
+
